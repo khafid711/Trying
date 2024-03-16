@@ -1,0 +1,60 @@
+
+Perpetual accounting is a method of maintaining financial records where transactions are continuously recorded as they occur. In a computerized system, this typically involves using accounting software or building a custom application to handle the recording and tracking of transactions.
+class Account:
+    def __init__(self, name):
+        self.name = name
+        self.balance = 0
+
+    def deposit(self, amount):
+        self.balance += amount
+        print(f"Deposited {amount} into {self.name} account.")
+
+    def withdraw(self, amount):
+        if amount <= self.balance:
+            self.balance -= amount
+            print(f"Withdrew {amount} from {self.name} account.")
+        else:
+            print(f"Insufficient funds in {self.name} account.")
+
+class PerpetualAccountingSystem:
+    def __init__(self):
+        self.accounts = {}
+
+    def create_account(self, name):
+        if name not in self.accounts:
+            self.accounts[name] = Account(name)
+            print(f"Created {name} account.")
+        else:
+            print(f"Account with name {name} already exists.")
+
+    def deposit(self, name, amount):
+        if name in self.accounts:
+            self.accounts[name].deposit(amount)
+        else:
+            print(f"Account with name {name} does not exist.")
+
+    def withdraw(self, name, amount):
+        if name in self.accounts:
+            self.accounts[name].withdraw(amount)
+        else:
+            print(f"Account with name {name} does not exist.")
+
+    def display_balance(self, name):
+        if name in self.accounts:
+            print(f"Balance in {name} account: {self.accounts[name].balance}")
+        else:
+            print(f"Account with name {name} does not exist.")
+
+# Example Usage
+if __name__ == "__main__":
+    accounting_system = PerpetualAccountingSystem()
+    
+    accounting_system.create_account("Savings")
+    accounting_system.create_account("Checking")
+
+    accounting_system.deposit("Savings", 1000)
+    accounting_system.withdraw("Savings", 200)
+    accounting_system.display_balance("Savings")
+
+    accounting_system.deposit("Checking", 500)
+    accounting_system.display_balance("Checking")
