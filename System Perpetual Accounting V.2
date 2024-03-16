@@ -1,0 +1,104 @@
+import datetime
+
+class Transaction:
+    def __init__(self, amount, transaction_type):
+        self.amount = amount
+        self.transaction_type = transaction_type
+        self.timestamp = datetime.datetime.now()
+
+class Account:
+    def __init__(self, name):
+        self.name = name
+        self.balance = 0
+        self.transactions = []
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            self.transactions.append(Transaction(amount, "Deposit"))
+            print(f"Deposited {amount} into {self.name} account.")
+        else:
+            print("Invalid deposit amount.")
+
+    def withdraw(self, amount):
+        if 0 < amount <= self.balance:
+            self.balance -= amount
+            self.transactions.append(Transaction(amount, "Withdrawal"))
+            print(f"Withdrew {amount} from {self.name} account.")
+        else:
+            print("Invalid withdrawal amount or insufficient funds.")
+
+    def transfer(self, amount, recipient_account):
+        if amount > 0 and amount <= self.balance:
+            self.balance -= amount
+            self.transactions.append(Transaction(-amount, "Transfer to " + recipient_account.name))
+            recipient_account.deposit(amount)
+            print(f"Transferred {amount} from {self.name} to {recipient_account.name}.")
+        else:
+            print("Invalid transfer amount or insufficient funds.")
+
+    def view_transactions(self):
+        print(f"Transaction history for {self.name} account:")
+        for transaction in self.transactions:
+            print(f"{transaction.timestamp}: {transaction.transaction_type} - {transaction.amount}")
+
+class PerpetualAccountingSystem:
+    def __init__(self):
+        self.accounts = {}
+
+    def create_account(self, name):
+        if name not in self.accounts:
+            self.accounts[name] = Account(name)
+            print(f"Created {name} account.")
+        else:
+            print(f"Account with name {name} already exists.")
+
+    def deposit(self, name, amount):
+        if name in self.accounts:
+            self.accounts[name].deposit(amount)
+        else:
+            print(f"Account with name {name} does not exist.")
+
+    def withdraw(self, name, amount):
+        if name in self.accounts:
+            self.accounts[name].withdraw(amount)
+        else:
+            print(f"Account with name {name} does not exist.")
+
+    def transfer(self, from_account, to_account, amount):
+        if from_account in self.accounts and to_account in self.accounts:
+            self.accounts[from_account].transfer(amount, self.accounts[to_account])
+        else:
+            print("One or both of the specified accounts do not exist.")
+
+    def display_balance(self, name):
+        if name in self.accounts:
+            print(f"Balance in {name} account: {self.accounts[name].balance}")
+        else:
+            print(f"Account with name {name} does not exist.")
+
+    def view_transactions(self, name):
+        if name in self.accounts:
+            self.accounts[name].view_transactions()
+        else:
+            print(f"Account with name {name} does not exist.")
+
+# Example Usage
+if __name__ == "__main__":
+    accounting_system = PerpetualAccountingSystem()
+    
+    accounting_system.create_account("Savings")
+    accounting_system.create_account("Checking")
+
+    accounting_system.deposit("Savings", 1000)
+    accounting_system.withdraw("Savings", 200)
+    accounting_system.display_balance("Savings")
+
+    accounting_system.deposit("Checking", 500)
+    accounting_system.display_balance("Checking")
+
+    accounting_system.transfer("Savings", "Checking", 300)
+    accounting_system.display_balance("Savings")
+    accounting_system.display_balance("Checking")
+
+    accounting_system.view_transactions("Savings")
